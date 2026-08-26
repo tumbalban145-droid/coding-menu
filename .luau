@@ -458,17 +458,17 @@ AddTitle(
 
 AddButton(
 	MainPage,
-	"Dashboard",
+	"base",
 	function()
 
-		print("Dashboard clicked")
+		
 
 	end
 )
 
 AddButton(
 	MainPage,
-	"base",
+	"secret base",
 	function()
 
 		local Players = game:GetService("Players") -- 1. game.Player harusnya Players
@@ -790,3 +790,134 @@ TweenService:Create(
 		Size = UDim2.new(0, 560, 0, 360)
 	}
 ):Play()
+--==================================================
+-- MINIMIZE / MENU LOGO
+--==================================================
+
+local MiniButton = Instance.new("TextButton")
+
+MiniButton.Name = "MiniButton"
+
+MiniButton.Size = UDim2.new(0, 60, 0, 60)
+
+MiniButton.Position = UDim2.new(
+	0,
+	20,
+	0.5,
+	-30
+)
+
+MiniButton.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+MiniButton.BorderSizePixel = 0
+
+MiniButton.Text = "M"
+MiniButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+MiniButton.TextSize = 22
+MiniButton.Font = Enum.Font.GothamBold
+
+MiniButton.Visible = false
+MiniButton.ZIndex = 50
+
+MiniButton.Parent = ScreenGui
+
+-- Bulat
+local MiniCorner = Instance.new("UICorner")
+
+MiniCorner.CornerRadius = UDim.new(1, 0)
+
+MiniCorner.Parent = MiniButton
+
+--==================================================
+-- MINIMIZE BUTTON
+--==================================================
+
+local MinimizeButton = Instance.new("TextButton")
+
+MinimizeButton.Name = "MinimizeButton"
+
+MinimizeButton.Size = UDim2.new(0, 35, 0, 35)
+
+MinimizeButton.Position = UDim2.new(
+	1,
+	-90,
+	0,
+	15
+)
+
+MinimizeButton.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+
+MinimizeButton.BorderSizePixel = 0
+
+MinimizeButton.Text = "-"
+MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+MinimizeButton.TextSize = 20
+MinimizeButton.Font = Enum.Font.GothamBold
+
+MinimizeButton.AutoButtonColor = false
+
+MinimizeButton.ZIndex = 10
+
+MinimizeButton.Parent = Header
+
+local MinimizeCorner = Instance.new("UICorner")
+
+MinimizeCorner.CornerRadius = UDim.new(0, 8)
+
+MinimizeCorner.Parent = MinimizeButton
+
+--==================================================
+-- MINIMIZE
+--==================================================
+
+MinimizeButton.MouseButton1Click:Connect(function()
+
+	-- Sembunyikan menu
+	Main.Visible = false
+
+	-- Tampilkan logo
+	MiniButton.Visible = true
+
+end)
+
+--==================================================
+-- OPEN MENU DARI LOGO
+--==================================================
+
+MiniButton.MouseButton1Click:Connect(function()
+
+	-- Sembunyikan logo
+	MiniButton.Visible = false
+
+	-- Tampilkan menu
+	Main.Visible = true
+
+end)
+
+--==================================================
+-- HOVER LOGO
+--==================================================
+
+MiniButton.MouseEnter:Connect(function()
+
+	TweenService:Create(
+		MiniButton,
+		TweenInfo.new(0.15),
+		{
+			BackgroundColor3 = Color3.fromRGB(50, 50, 65)
+		}
+	):Play()
+
+end)
+
+MiniButton.MouseLeave:Connect(function()
+
+	TweenService:Create(
+		MiniButton,
+		TweenInfo.new(0.15),
+		{
+			BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+		}
+	):Play()
+
+end)
