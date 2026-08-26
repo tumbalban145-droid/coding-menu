@@ -466,7 +466,7 @@ local player = Players.LocalPlayer
 local char = player.Character or player.CharacterAdded:Wait()
 local rootPart = char:WaitForChild("HumanoidRootPart") -- 2. nunggu character ke load
 
-rootPart.CFrame = CFrame.new(-93.2106934, 55.2619057, 27.3969727, -1, 0, -0, 0, 0, -1, 0, -1, -0) 
+rootPart.CFrame = CFrame.new(-89.6800385, 199.50296, -10.602417, 0, 1, -0, -1, 0, 0, 0, 0, 1) 
 -- Cframe.new harusnya CFrame.new. F nya gede
 
 
