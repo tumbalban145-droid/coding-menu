@@ -316,20 +316,32 @@ AddTitle(
 
 AddButton(
 	MainPage,
-	"Dashboard",
+	"secret rarity",
 	function()
 
-		print("Dashboard clicked")
+		local Players = game:GetService("Players") -- 1. game.Player harusnya Players
+local player = Players.LocalPlayer
+local char = player.Character or player.CharacterAdded:Wait()
+local rootPart = char:WaitForChild("HumanoidRootPart") -- 2. nunggu character ke load
+
+rootPart.CFrame = CFrame.new(-129.535553, 58.8707581, -7859.33984, -1, 0, 0, 0, 1, 0, 0, 0, -1) 
+
 
 	end
 )
 
 AddButton(
 	MainPage,
-	"Information",
+	"base",
 	function()
 
-		print("Information clicked")
+		local Players = game:GetService("Players") -- 1. game.Player harusnya Players
+local player = Players.LocalPlayer
+local char = player.Character or player.CharacterAdded:Wait()
+local rootPart = char:WaitForChild("HumanoidRootPart") -- 2. nunggu character ke load
+
+rootPart.CFrame = CFrame.new(-93.2106934, 55.2619057, 27.3969727, -1, 0, -0, 0, 0, -1, 0, -1, -0) 
+
 
 	end
 )
