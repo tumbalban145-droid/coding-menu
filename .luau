@@ -508,4 +508,52 @@ TweenService:Create(
 	{
 		Size = UDim2.new(0, 620, 0, 400)
 	}
-):Play()
+)
+--==================================================
+-- EXIT BUTTON
+--==================================================
+
+local ExitButton = Instance.new("TextButton")
+ExitButton.Name = "ExitButton"
+ExitButton.Size = UDim2.new(0, 40, 0, 40)
+ExitButton.Position = UDim2.new(1, -50, 0, 15)
+
+ExitButton.BackgroundColor3 = Color3.fromRGB(180, 45, 45)
+ExitButton.BackgroundTransparency = 0
+ExitButton.BorderSizePixel = 0
+
+ExitButton.Text = "X"
+ExitButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ExitButton.TextSize = 18
+ExitButton.Font = Enum.Font.GothamBold
+
+ExitButton.ZIndex = 5
+ExitButton.Parent = Header
+
+local ExitCorner = Instance.new("UICorner")
+ExitCorner.CornerRadius = UDim.new(0, 8)
+ExitCorner.Parent = ExitButton
+
+ExitButton.MouseEnter:Connect(function()
+	TweenService:Create(
+		ExitButton,
+		TweenInfo.new(0.15),
+		{
+			BackgroundColor3 = Color3.fromRGB(220, 60, 60)
+		}
+	):Play()
+end)
+
+ExitButton.MouseLeave:Connect(function()
+	TweenService:Create(
+		ExitButton,
+		TweenInfo.new(0.15),
+		{
+			BackgroundColor3 = Color3.fromRGB(180, 45, 45)
+		}
+	):Play()
+end)
+
+ExitButton.MouseButton1Click:Connect(function()
+	ScreenGui.Enabled = false
+end)
