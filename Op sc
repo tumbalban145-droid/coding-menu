@@ -308,7 +308,7 @@ local function AutoMisiRarity()
 
 	-- 1. TEMPAT TRIAL INTERACT
 	local TRIAL = CFrame.new(-93.2920837, 57.4325294, -10203.1035)
-	local TEMPAT_TRIAL = workspace:FindFirstChild("Tower Trial") -- GANTI KALO NAMA PART NYA BEDA
+	local TEMPAT_TRIAL = workspace:WaitForChild("EndTower"):WaitForChild("Entrance")
 
 	-- 2. LOKASI TIAP RARITY
 	local LOKASI_BARANG = {
