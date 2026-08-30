@@ -26,7 +26,7 @@ getgenv().AutoTP = false
 
 -- DATA TEMPAT - UDAH FIX SESUAI SS LU
 local TRIAL = CFrame.new(-93.2920837, 57.4325294, -10203.1035)
-local TEMPAT_TRIAL = workspace:WaitForChild("EndTower"):WaitForChild("Entrance")
+local TEMPAT_TRIAL = workspace:FindFirstChild("EndTower"):FindFirstChild("Entrance")
 
 local LOKASI_BARANG = {
     Common = CFrame.new(-93.2106934, 55.2619057, -134.602539),
