@@ -1,0 +1,88 @@
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local ProximityPromptService = game:GetService("ProximityPromptService")
+
+local player = Players.LocalPlayer
+local char = player.Character or player.CharacterAdded:Wait()
+local hrp = char:WaitForChild("HumanoidRootPart")
+local hum = char:WaitForChild("Humanoid")
+
+-- ============ SETTING DI SINI ============
+local CFrame_Target = CFrame.new(100, 10, 50) -- tempat object/interact
+local CFrame_Safezone = CFrame.new(0, 10, 0) -- tempat safezone balik
+local Hold_Duration = 1.5 -- berapa lama tahan E
+-- =========================================
+
+local function setRagdoll(state)
+    hum.PlatformStand = state
+    if state then
+        hum:ChangeState(Enum.HumanoidStateType.Physics)
+    else
+        hum:ChangeState(Enum.HumanoidStateType.GettingUp)
+    end
+    for _, v in pairs(char:GetDescendants()) do
+        if v:IsA("Motor6D") then
+            v.Enabled = not state
+        end
+    end
+end
+
+local function flyInvisibleHitbox(targetCF, duration)
+    local hitbox = Instance.new("Part")
+    hitbox.Size = Vector3.new(2,2,1)
+    hitbox.Transparency = 1
+    hitbox.CanCollide = false
+    hitbox.Anchored = true
+    hitbox.CFrame = hrp.CFrame
+    hitbox.Parent = workspace
+
+    local tween = TweenService:Create(hitbox, TweenInfo.new(duration or 1, Enum.EasingStyle.Linear), {CFrame = targetCF})
+    tween:Play()
+    tween.Completed:Wait()
+
+    hrp.CFrame = hitbox.CFrame
+    hitbox:Destroy()
+end
+
+local function autoInteractHold()
+    -- cari prompt terdekat
+    for _, v in pairs(workspace:GetDescendants()) do
+        if v:IsA("ProximityPrompt") then
+            if (hrp.Position - v.Parent.Position).Magnitude < 15 then
+                -- hold E otomatis
+                fireproximityprompt(v, Hold_Duration)
+                -- atau kalo executor lu gak support fireproximityprompt:
+                -- v.HoldDuration = 0
+                -- v:InputHoldBegin()
+                -- task.wait(Hold_Duration)
+                -- v:InputHoldEnd()
+                print("Interact: "..v.Parent.Name)
+                return true
+            end
+        end
+    end
+    print("Prompt gak ketemu di radius 15")
+    return false
+end
+
+-- ============ SEQUENCE UTAMA ============
+local function runSequence()
+    print("1. Ragdoll + Fly ke Target")
+    setRagdoll(true)
+    flyInvisibleHitbox(CFrame_Target, 1.2)
+    
+    print("2. Gak Ragdoll + Interact")
+    setRagdoll(false)
+    task.wait(0.5) -- biar berdiri dulu
+    autoInteractHold()
+    task.wait(Hold_Duration + 0.5)
+    
+    print("3. Ragdoll lagi + Fly ke Safezone")
+    setRagdoll(true)
+    flyInvisibleHitbox(CFrame_Safezone, 1.2)
+    setRagdoll(false)
+    
+    print("Sequence Selesai")
+end
+
+runSequence()
