@@ -1,0 +1,463 @@
+--==================================================
+-- STARFDUST v1.0 | COSMIC UI
+--==================================================
+
+local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local old = playerGui:FindFirstChild("StarfdustGUI")
+if old then old:Destroy() end
+
+-- COLORS
+local C = {
+    bg = Color3.fromRGB(13, 10, 24),
+    panel = Color3.fromRGB(22, 17, 39),
+    card = Color3.fromRGB(29, 22, 49),
+    button = Color3.fromRGB(39, 29, 64),
+    purple = Color3.fromRGB(151, 103, 255),
+    blue = Color3.fromRGB(100, 151, 255),
+    white = Color3.fromRGB(245, 241, 255),
+    muted = Color3.fromRGB(155, 146, 181),
+    green = Color3.fromRGB(108, 235, 180),
+}
+
+local function create(class, props, parent)
+    local obj = Instance.new(class)
+    for k, v in pairs(props) do
+        obj[k] = v
+    end
+    obj.Parent = parent
+    return obj
+end
+
+local function corner(obj, radius)
+    create("UICorner", {
+        CornerRadius = UDim.new(0, radius)
+    }, obj)
+end
+
+local function outline(obj, color, thickness, transparency)
+    return create("UIStroke", {
+        Color = color,
+        Thickness = thickness or 1,
+        Transparency = transparency or 0,
+    }, obj)
+end
+
+local function label(parent, text, pos, size, fontSize, color, font)
+    return create("TextLabel", {
+        Position = pos,
+        Size = size,
+        BackgroundTransparency = 1,
+        Text = text,
+        TextColor3 = color or C.white,
+        TextSize = fontSize or 12,
+        Font = font or Enum.Font.Gotham,
+        TextWrapped = true,
+        TextXAlignment = Enum.TextXAlignment.Left,
+    }, parent)
+end
+
+local function tween(obj, properties, duration)
+    TweenService:Create(
+        obj,
+        TweenInfo.new(duration or 0.18, Enum.EasingStyle.Quart,
+            Enum.EasingDirection.Out),
+        properties
+    ):Play()
+end
+
+-- SCREEN
+local gui = create("ScreenGui", {
+    Name = "StarfdustGUI",
+    ResetOnSpawn = false,
+    IgnoreGuiInset = false,
+    DisplayOrder = 50,
+}, playerGui)
+
+-- MAIN WINDOW
+local window = create("Frame", {
+    Name = "Window",
+    AnchorPoint = Vector2.new(0.5, 0.5),
+    Position = UDim2.fromScale(0.5, 0.5),
+    Size = UDim2.fromOffset(590, 365),
+    BackgroundColor3 = C.bg,
+    BorderSizePixel = 0,
+    ClipsDescendants = true,
+}, gui)
+
+corner(window, 15)
+outline(window, C.blue, 1.5, 0.05)
+
+create("UISizeConstraint", {
+    MinSize = Vector2.new(310, 290),
+    MaxSize = Vector2.new(760, 520),
+}, window)
+
+-- TOP HEADER
+local header = create("Frame", {
+    Size = UDim2.new(1, 0, 0, 64),
+    BackgroundColor3 = C.panel,
+    BorderSizePixel = 0,
+}, window)
+
+local dragArea = create("TextButton", {
+    Name = "DragArea",
+    Size = UDim2.new(1, -115, 1, 0),
+    BackgroundTransparency = 1,
+    Text = "",
+    AutoButtonColor = false,
+}, header)
+
+-- LOGO
+local logo = create("Frame", {
+    Position = UDim2.fromOffset(15, 13),
+    Size = UDim2.fromOffset(37, 37),
+    BackgroundColor3 = C.button,
+    BorderSizePixel = 0,
+}, header)
+corner(logo, 11)
+outline(logo, C.purple, 1.4)
+
+label(logo, "S", UDim2.fromScale(0, 0),
+    UDim2.fromScale(1, 1), 23, C.white, Enum.Font.GothamBlack
+).TextXAlignment = Enum.TextXAlignment.Center
+
+label(header, "Starfdust", UDim2.fromOffset(62, 11),
+    UDim2.new(1, -175, 0, 27), 19, C.white, Enum.Font.GothamBold)
+
+label(header, "C O S M I C   I N T E R F A C E",
+    UDim2.fromOffset(63, 37),
+    UDim2.new(1, -180, 0, 15), 8, C.muted)
+
+-- SIDEBAR
+local sidebar = create("Frame", {
+    Position = UDim2.fromOffset(0, 64),
+    Size = UDim2.new(0, 130, 1, -64),
+    BackgroundColor3 = C.panel,
+    BorderSizePixel = 0,
+}, window)
+
+label(sidebar, "WORKSPACE", UDim2.fromOffset(15, 19),
+    UDim2.new(1, -25, 0, 20), 9, C.muted, Enum.Font.GothamBold)
+
+local homeBtn = create("TextButton", {
+    Position = UDim2.fromOffset(9, 49),
+    Size = UDim2.new(1, -18, 0, 39),
+    BackgroundColor3 = C.button,
+    Text = "   ◈   Home",
+    TextColor3 = C.white,
+    TextSize = 12,
+    Font = Enum.Font.GothamMedium,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    AutoButtonColor = false,
+}, sidebar)
+corner(homeBtn, 8)
+
+local mainBtn = create("TextButton", {
+    Position = UDim2.fromOffset(9, 96),
+    Size = UDim2.new(1, -18, 0, 39),
+    BackgroundColor3 = C.panel,
+    Text = "   ◇   Main",
+    TextColor3 = C.muted,
+    TextSize = 12,
+    Font = Enum.Font.GothamMedium,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    AutoButtonColor = false,
+}, sidebar)
+corner(mainBtn, 8)
+
+local selectedBar = create("Frame", {
+    Position = UDim2.fromOffset(9, 49),
+    Size = UDim2.new(0, 3, 0, 39),
+    BackgroundColor3 = C.purple,
+    BorderSizePixel = 0,
+}, sidebar)
+corner(selectedBar, 3)
+
+label(sidebar, "STARDUST UI",
+    UDim2.fromOffset(14, 175),
+    UDim2.new(1, -22, 0, 18), 8, C.muted, Enum.Font.GothamBold)
+
+label(sidebar, "v1.0.0",
+    UDim2.fromOffset(14, 195),
+    UDim2.new(1, -22, 0, 18), 10, C.muted)
+
+-- CONTENT AREA
+local content = create("Frame", {
+    Name = "Content",
+    Position = UDim2.fromOffset(130, 64),
+    Size = UDim2.new(1, -130, 1, -64),
+    BackgroundTransparency = 1,
+    ClipsDescendants = true,
+}, window)
+
+-- HOME PAGE
+local home = create("Frame", {
+    Name = "Home",
+    Size = UDim2.fromScale(1, 1),
+    BackgroundTransparency = 1,
+}, content)
+
+label(home, "DASHBOARD / HOME",
+    UDim2.fromOffset(20, 17),
+    UDim2.new(1, -40, 0, 17), 9, C.purple, Enum.Font.GothamBold)
+
+label(home, "Welcome back.",
+    UDim2.fromOffset(20, 41),
+    UDim2.new(1, -40, 0, 34), 23, C.white, Enum.Font.GothamBold)
+
+local homeCard = create("Frame", {
+    Position = UDim2.fromOffset(20, 88),
+    Size = UDim2.new(1, -40, 0, 112),
+    BackgroundColor3 = C.card,
+    BorderSizePixel = 0,
+}, home)
+corner(homeCard, 11)
+outline(homeCard, C.purple, 1, 0.65)
+
+label(homeCard, "✦   YOUR SPACE",
+    UDim2.fromOffset(13, 12),
+    UDim2.new(1, -26, 0, 18), 9, C.blue, Enum.Font.GothamBold)
+
+-- EDIT THIS TEXT
+label(homeCard,
+    "Welcome to Starfdust!\nTulis deskripsi, informasi, atau teks lu di sini.",
+    UDim2.fromOffset(13, 37),
+    UDim2.new(1, -26, 1, -46), 12, C.white)
+
+label(home, "Designed for your own creations.",
+    UDim2.fromOffset(20, 215),
+    UDim2.new(1, -40, 0, 20), 10, C.muted)
+
+-- MAIN PAGE
+local main = create("Frame", {
+    Name = "Main",
+    Size = UDim2.fromScale(1, 1),
+    BackgroundTransparency = 1,
+    Visible = false,
+}, content)
+
+label(main, "WORKSPACE / FUNCTIONS",
+    UDim2.fromOffset(20, 17),
+    UDim2.new(1, -40, 0, 17), 9, C.purple, Enum.Font.GothamBold)
+
+label(main, "Main Functions",
+    UDim2.fromOffset(20, 41),
+    UDim2.new(1, -40, 0, 32), 21, C.white, Enum.Font.GothamBold)
+
+label(main, "Pilih fungsi untuk menjalankan aksi.",
+    UDim2.fromOffset(20, 73),
+    UDim2.new(1, -40, 0, 20), 10, C.muted)
+
+-- FUNCTION BUTTONS
+local function makeFunction(name, description, y, callback)
+    local card = create("Frame", {
+        Position = UDim2.fromOffset(20, y),
+        Size = UDim2.new(1, -40, 0, 48),
+        BackgroundColor3 = C.card,
+        BorderSizePixel = 0,
+    }, main)
+    corner(card, 9)
+    outline(card, C.blue, 1, 0.72)
+
+    local btn = create("TextButton", {
+        Size = UDim2.fromScale(1, 1),
+        BackgroundTransparency = 1,
+        Text = "",
+        AutoButtonColor = false,
+    }, card)
+
+    label(card, "✦  " .. name,
+        UDim2.fromOffset(12, 6),
+        UDim2.new(1, -45, 0, 18), 11, C.white, Enum.Font.GothamBold)
+
+    label(card, description,
+        UDim2.fromOffset(13, 25),
+        UDim2.new(1, -48, 0, 15), 9, C.muted)
+
+    label(card, "›",
+        UDim2.new(1, -30, 0, 5),
+        UDim2.fromOffset(20, 35), 23, C.purple, Enum.Font.GothamBold)
+
+    btn.MouseEnter:Connect(function()
+        tween(card, {BackgroundColor3 = C.button})
+    end)
+
+    btn.MouseLeave:Connect(function()
+        tween(card, {BackgroundColor3 = C.card})
+    end)
+
+    btn.Activated:Connect(callback)
+    return btn
+end
+
+-- PUT YOUR OWN CODE INSIDE THESE FUNCTIONS
+local function function1()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/tumbalban145-droid/coding-menu/454aadb2c22318a4504577236cc6fd7040fc5be0/.luau"))()
+end
+
+local function function2()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/tumbalban145-droid/coding-menu/98d72126a08eb565aea397ae1df48a815161015e/aura%20hit"))()
+end
+
+local function function3()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/tumbalban145-droid/coding-menu/058efc93df6686e78c7cf22d09ebe4615b2fe241/auto%20break%20egg"))()
+end
+
+makeFunction("Function 01", "First custom action", 103, function1)
+makeFunction("Function 02", "Second custom action", 159, function2)
+makeFunction("Function 03", "Third custom action", 215, function3)
+
+-- FOOTER BUTTONS
+local footer = create("Frame", {
+    Name = "Footer",
+    AnchorPoint = Vector2.new(1, 1),
+    Position = UDim2.new(1, -13, 1, -11),
+    Size = UDim2.fromOffset(138, 31),
+    BackgroundTransparency = 1,
+}, content)
+
+local minimize = create("TextButton", {
+    Size = UDim2.fromOffset(63, 29),
+    BackgroundColor3 = C.button,
+    Text = "−  MINI",
+    TextColor3 = C.white,
+    TextSize = 10,
+    Font = Enum.Font.GothamBold,
+    AutoButtonColor = false,
+}, footer)
+corner(minimize, 7)
+outline(minimize, C.blue, 1, 0.4)
+
+local exit = create("TextButton", {
+    Position = UDim2.fromOffset(70, 0),
+    Size = UDim2.fromOffset(63, 29),
+    BackgroundColor3 = Color3.fromRGB(70, 30, 58),
+    Text = "×  EXIT",
+    TextColor3 = Color3.fromRGB(255, 190, 220),
+    TextSize = 10,
+    Font = Enum.Font.GothamBold,
+    AutoButtonColor = false,
+}, footer)
+corner(exit, 7)
+
+-- NAVIGATION
+local function switchPage(page)
+    local isHome = page == "Home"
+
+    home.Visible = isHome
+    main.Visible = not isHome
+
+    homeBtn.BackgroundColor3 = isHome and C.button or C.panel
+    homeBtn.TextColor3 = isHome and C.white or C.muted
+
+    mainBtn.BackgroundColor3 = isHome and C.panel or C.button
+    mainBtn.TextColor3 = isHome and C.muted or C.white
+
+    tween(selectedBar, {
+        Position = UDim2.fromOffset(9, isHome and 49 or 96)
+    }, 0.2)
+end
+
+homeBtn.Activated:Connect(function()
+    switchPage("Home")
+end)
+
+mainBtn.Activated:Connect(function()
+    switchPage("Main")
+end)
+
+-- MINI LOGO
+local miniLogo = create("TextButton", {
+    Name = "MiniLogo",
+    AnchorPoint = Vector2.new(0.5, 0.5),
+    Position = UDim2.fromScale(0.5, 0.5),
+    Size = UDim2.fromOffset(54, 54),
+    BackgroundColor3 = C.panel,
+    Text = "S",
+    TextColor3 = C.white,
+    TextSize = 28,
+    Font = Enum.Font.GothamBlack,
+    Visible = false,
+    AutoButtonColor = false,
+}, gui)
+corner(miniLogo, 17)
+outline(miniLogo, C.purple, 2)
+
+-- DRAG: MOUSE + TOUCH
+local function makeDraggable(handle, target)
+    local dragging = false
+    local dragInput
+    local startInput
+    local startPosition
+
+    handle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1
+            or input.UserInputType == Enum.UserInputType.Touch then
+
+            dragging = true
+            startInput = input.Position
+            startPosition = target.Position
+
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    handle.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement
+            or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+
+    UIS.InputChanged:Connect(function(input)
+        if dragging and (input == dragInput
+            or input.UserInputType == Enum.UserInputType.MouseMovement) then
+
+            local delta = input.Position - startInput
+            target.Position = UDim2.new(
+                startPosition.X.Scale,
+                startPosition.X.Offset + delta.X,
+                startPosition.Y.Scale,
+                startPosition.Y.Offset + delta.Y
+            )
+        end
+    end)
+end
+
+makeDraggable(dragArea, window)
+makeDraggable(miniLogo, miniLogo)
+
+-- MINIMIZE / RESTORE
+minimize.Activated:Connect(function()
+    miniLogo.Position = UDim2.new(
+        window.Position.X.Scale,
+        window.Position.X.Offset,
+        window.Position.Y.Scale,
+        window.Position.Y.Offset
+    )
+    window.Visible = false
+    miniLogo.Visible = true
+end)
+
+miniLogo.Activated:Connect(function()
+    window.Position = miniLogo.Position
+    miniLogo.Visible = false
+    window.Visible = true
+end)
+
+-- EXIT
+exit.Activated:Connect(function()
+    gui:Destroy()
+end)
+
+print("Starfdust v1.0 loaded successfully.")
