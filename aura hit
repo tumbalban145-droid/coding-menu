@@ -1,0 +1,33 @@
+_G.AutoHit = not _G.AutoHit
+
+if _G.AutoHitConnection then _G.AutoHitConnection:Disconnect() end
+
+if _G.AutoHit then
+    local Players = game:GetService("Players")
+    local RunService = game:GetService("RunService")
+    local VIM = game:GetService("VirtualInputManager")
+    local player = Players.LocalPlayer
+    
+    _G.AutoHitConnection = RunService.Heartbeat:Connect(function()
+        local char = player.Character
+        local hrp = char and char:FindFirstChild("HumanoidRootPart")
+        if not hrp then return end
+        local tool = char:FindFirstChildOfClass("Tool") or player.Backpack:FindFirstChildOfClass("Tool")
+        if tool and tool.Parent == player.Backpack then char.Humanoid:EquipTool(tool) end
+        if not tool then return end
+        for _, target in pairs(Players:GetPlayers()) do
+            if target ~= player and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                if (hrp.Position - target.Character.HumanoidRootPart.Position).Magnitude <= 4 then
+                    local cam = workspace.CurrentCamera.ViewportSize
+                    VIM:SendMouseButtonEvent(cam.X/2, cam.Y/2, 0, true, game, 0)
+                    task.wait(0.05)
+                    VIM:SendMouseButtonEvent(cam.X/2, cam.Y/2, 0, false, game, 0)
+                    break
+                end
+            end
+        end
+    end)
+    print("Auto Hit ON")
+else
+    print("Auto Hit OFF")
+end
